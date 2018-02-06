@@ -24,6 +24,7 @@ Github leaked patrol为一款github泄露巡航工具：
 ![](http://docs.xsec.io/images/github/rules.png)
 
 - 启动搜索功能：
+
 ![](http://docs.xsec.io/images/github/search.png)
 
 - 审核结果
