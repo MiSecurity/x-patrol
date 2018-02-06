@@ -1,0 +1,53 @@
+*{
+    box-sizing: border-box;
+}
+.content {
+    padding: 8px 15px 0;
+}
+.navbar-nav>.user-menu>.dropdown-menu{
+    width: 120px;
+    min-width: 0;
+}
+.navbar-nav>.user-menu>.dropdown-menu>a{
+    width: 100%;
+    text-align: center;
+    line-height: 30px;
+    display: block;
+}
+.c-pointer-list .c-pointer{
+    height: 100px;
+    line-height: 20px;
+    padding: 10px;
+}
+.c-pointer-list .c-pointer>.inner{
+    padding: 0;
+    position: relative;
+}
+.c-pointer-list .c-pointer>.icon{
+    top: 10px;
+    right: 0;
+}
+.c-pointer-list .c-pointer-tag{
+    margin-top: 6px;
+    position: absolute;
+    right: 0;
+    z-index: 99;
+}
+.c-manager{
+    position: relative;
+}
+.c-manager .c-del,
+.c-manager .c-edit{
+    padding-left: 20px;
+}
+.c-manager .c-add-btn{
+    position: absolute;
+    z-index: 99;
+    right: 25px;
+    top: 10px;
+}
+@media (max-width: 991px){
+    .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
+        right: 0;
+    }
+}

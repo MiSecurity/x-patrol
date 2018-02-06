@@ -1,0 +1,75 @@
+[
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "\\A.*_rsa\\z",
+    "caption": "Private SSH key",
+    "description": null
+  },
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "\\A.*_dsa\\z",
+    "caption": "Private SSH key",
+    "description": null
+  },
+
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "\\A\\.?(bash_|zsh_|z)?history\\z",
+    "caption": "Shell command history file",
+    "description": null
+  },
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "\\A\\.?mysql_history\\z",
+    "caption": "MySQL client command history file",
+    "description": null
+  },
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "\\A\\.?psql_history\\z",
+    "caption": "PostgreSQL client command history file",
+    "description": null
+  },
+
+  {
+    "part": "filename",
+    "type": "match",
+    "pattern": "database.yml",
+    "caption": "Potential Ruby On Rails database configuration file",
+    "description": "Might contain database credentials."
+  },
+  {
+    "part": "filename",
+    "type": "match",
+    "pattern": "settings.py",
+    "caption": "Django configuration file",
+    "description": "Might contain database credentials, online storage system credentials, secret keys, etc."
+  },
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "\\A(.*)?config(\\.inc)?\\.php\\z",
+    "caption": "PHP configuration file",
+    "description": "Might contain credentials and keys."
+  },
+
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "password",
+    "caption": "Contains word: password",
+    "description": null
+  },
+  {
+    "part": "filename",
+    "type": "regex",
+    "pattern": "credential",
+    "caption": "Contains word: credential",
+    "description": null
+  }
+]

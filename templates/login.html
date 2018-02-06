@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Github leaked patrol</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/lib/adminLET2/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/lib/adminLET2/css/skins/skin-red.min.css">
+    <!--[if lt IE 9]>
+    <script src="/lib/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="/lib/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#"><b>Github leaked patrol</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">登陆后即可使用</p>
+
+        <form action="/admin/login/" method="post">
+            <input type="hidden" name="_csrf" value="{{.csrf_token}}">
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="用户名" name="username">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="密码" name="password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-6 col-xs-12">
+                    <input type="text" class="form-control" placeholder="验证码" name="captcha">
+                </div>
+                <div class="col-lg-6 col-xs-12">
+                {{.Captcha.CreateHtml}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">记住账号
+                        </label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">登 陆</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+    </div>
+    <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery 2.2.3 -->
+<script src="/lib/jQuery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>

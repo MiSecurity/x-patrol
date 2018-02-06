@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Github leaked patrol</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/lib/adminLET2/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/lib/adminLET2/css/skins/skin-red.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <!--[if lt IE 9]>
+    <script src="/lib/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="/lib/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-red sidebar-mini">
+<div class="wrapper">
+    <!-- Main Header -->
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="/admin/index/" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>Github leaked patrol</b></span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Github leaked patrol</b></span>
+        </a>
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span style="font-size: 20px;margin-right: 10px;"><i class="fa fa-user-circle"></i></span>
+                            <span class="hidden-xs">{{.user}}</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="/logout/" class="btn btn-default btn-flat">退出登陆</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="header">检查报告</li>
+                <li><a href="/admin/reports/github/"><i class="fa fa-dashboard"></i> <span>github搜索报告</span></a></li>
+                <li><a href="/admin/reports/search/"><i class="fa fa-dashboard"></i> <span>本地检测报告</span></a></li>
+                <li class="header">后台管理</li>
+                <li class="active"><a href="/admin/assets/"><i class="fa fa-rmb"></i> <span>资产管理</span></a></li>
+                <li><a href="/admin/repos/"><i class="fa fa-link"></i> <span>仓库管理</span></a></li>
+                <li><a href="/admin/rules/"><i class="fa fa-link"></i> <span>规则管理</span></a></li>
+                <li><a href="/admin/tokens/"><i class="fa fa-users"></i> <span>token管理</span></a></li>
+                <li><a href="/admin/users/"><i class="fa fa-users"></i> <span>用户管理</span></a></li>
+            </ul>
+        </section>
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                资产管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/admin/index/"><i class="fa fa-dashboard"></i> 主页</a></li>
+                <li class="active">资产管理</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row c-manager">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <form class="form-horizontal" action="/admin/assets/edit/{{.assets.Id}}" method="post">
+                                <div class="box-body">
+                                    <input type="hidden" id="id">
+                                    <input type="hidden" name="_csrf" value="{{.csrf_token}}">
+                                    <div class="form-group">
+                                        <label for="hostName" class="col-sm-2 control-label">类型</label>
+
+                                        <div class="col-sm-10">
+                                            <select class="form-control" name="type">
+                                                <option value="repos" selected>repos_urls</option>
+                                                <option value="user">users</option>
+                                                <option value="Organizations">Organizations</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content" class="col-sm-2 control-label">资产内容</label>
+
+                                        <div class="col-sm-10">
+                                            <textarea name="content" id="content" class="form-control">
+                                            {{.assets.Content}}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="desc" class="col-sm-2 control-label">描述</label>
+
+                                        <div class="col-sm-10">
+                                            <textarea name="desc" id="desc" class="form-control">
+                                            {{.assets.Desc}}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="remark" class="col-sm-2 control-label"></label>
+                                        <div class="col-sm-10">
+                                            <input type="submit" value="提交" class="btn btn-primary">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- jQuery 2.2.3 -->
+<script src="/lib/jQuery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="/lib/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- echarts -->
+<script src="/lib/echarts/2.2.7/echarts-all.js"></script>
+<!-- bootbox -->
+<script src="/lib/bootbox.min.js"></script>
+<!-- DataTables -->
+<script src="/lib/datatables/jquery.dataTables.min.js"></script>
+<script src="/lib/datatables/dataTables.bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/lib/adminLET2/js/app.min.js"></script>
+
+<script src="/js/common.js"></script>
+</body>
+</html>
