@@ -32,7 +32,7 @@ type Repo struct {
 	Id     int64
 	Name   string
 	Url    string
-	Src    *InputInfo
+	Src    *InputInfo `xorm:json`
 	Status int `xorm:"int notnull default(1)"`
 }
 

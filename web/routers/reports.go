@@ -197,7 +197,8 @@ func ConfirmSearchResultById(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.ConfirmSearchResultById(int64(Id))
-		ctx.Redirect("/admin/reports/search/")
+		//ctx.Redirect("/admin/reports/search/")
+		ctx.HTML(200, "back")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -208,7 +209,8 @@ func CancelSearchResultById(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.CancelSearchResultById(int64(Id))
-		ctx.Redirect("/admin/reports/search/")
+		//ctx.Redirect("/admin/reports/search/")
+		ctx.HTML(200, "back")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -224,7 +226,8 @@ func DisableSearchRepoById(ctx *macaron.Context, sess session.Store) {
 			models.DisableRepoByUrl(repoUrl)
 		}
 		models.CancelSearchResultById(int64(Id))
-		ctx.Redirect("/admin/reports/search/")
+		ctx.HTML(200, "back")
+		//ctx.Redirect("/admin/reports/search/")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
