@@ -91,10 +91,10 @@ func ListGithubSearchResultPage(page int) ([]CodeResult, int, error) {
 	totalPages, err := Engine.Table("code_result").Where("status=0").Count()
 	var pages int
 
-	if int(totalPages)%vars.PAGE_SIZE == 0 {
+	if int(totalPages) % vars.PAGE_SIZE == 0 {
 		pages = int(totalPages) / vars.PAGE_SIZE
 	} else {
-		pages = int(totalPages)/vars.PAGE_SIZE + 1
+		pages = int(totalPages) / vars.PAGE_SIZE + 1
 	}
 
 	if page >= pages {
@@ -110,6 +110,22 @@ func ListGithubSearchResultPage(page int) ([]CodeResult, int, error) {
 	return results, pages, err
 }
 
+func GetPageById(id int64) (int, error) {
+	var page int
+	result := make([]int64, 0)
+	err := Engine.Table("code_result").Cols("id").Where("status=0").Find(&result)
+	for i, value := range result {
+		if value == id {
+			page = ((i + 1) / vars.PAGE_SIZE) + 1
+			if page == 0 {
+				page = 1
+			}
+			break
+		}
+	}
+	return page, err
+}
+
 func GetReportById(id int64) (bool, *CodeResult, error) {
 	report := new(CodeResult)
 	has, err := Engine.Id(id).Omit("repository").Get(report)
@@ -117,22 +133,24 @@ func GetReportById(id int64) (bool, *CodeResult, error) {
 	return has, report, err
 }
 
-func ConfirmReportById(id int64) (err error) {
+func ConfirmReportById(id int64) (page int, err error) {
 	report := new(CodeResult)
 	has, err := Engine.Id(id).Get(report)
+	page, err = GetPageById(id)
 	if err == nil && has {
 		report.Status = 1
 		_, err = Engine.Id(id).Cols("status").Update(report)
 	}
-	return err
+	return page, err
 }
 
-func CancelReportById(id int64) (err error) {
+func CancelReportById(id int64) (page int, err error) {
 	report := new(CodeResult)
 	has, err := Engine.Id(id).Omit("repository").Get(report)
+	page, err = GetPageById(id)
 	if err == nil && has {
 		report.Status = 2
 		_, err = Engine.Id(id).Cols("status").Update(report)
 	}
-	return err
+	return page, err
 }
