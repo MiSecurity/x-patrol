@@ -86,12 +86,14 @@ func ListGithubSearchResult(ctx *macaron.Context, sess session.Store) {
 	}
 }
 
+
 func ConfirmReportById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
-		models.ConfirmReportById(int64(Id))
-		ctx.Redirect("/admin/reports/github/")
+		page, _ := models.ConfirmReportById(int64(Id))
+		pageStr := strconv.Itoa(page)
+		ctx.Redirect("/admin/reports/github/" + pageStr)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -101,8 +103,9 @@ func CancelReportById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
-		models.CancelReportById(int64(Id))
-		ctx.Redirect("/admin/reports/github/")
+		page, _ := models.CancelReportById(int64(Id))
+		pageStr := strconv.Itoa(page)
+		ctx.Redirect("/admin/reports/github/" + pageStr)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
