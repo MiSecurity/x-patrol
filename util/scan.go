@@ -27,12 +27,12 @@ package util
 import (
 	"x-patrol/tasks"
 	"x-patrol/util/githubsearch"
+	"x-patrol/logger"
 
 	"github.com/urfave/cli"
 
 	"strings"
 	"time"
-	"x-patrol/logger"
 )
 
 func Scan(ctx *cli.Context) () {

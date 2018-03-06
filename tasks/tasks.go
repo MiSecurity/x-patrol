@@ -30,12 +30,13 @@ import (
 	"x-patrol/models"
 	"x-patrol/vars"
 	"x-patrol/logger"
+	"x-patrol/util/githubsearch"
+	"x-patrol/util/lib"
 
 	"time"
 	"os"
 	"sync"
 	"strings"
-	"x-patrol/util/githubsearch"
 )
 
 const (
@@ -54,9 +55,19 @@ type SearchResponse struct {
 	err  error
 }
 
+func init() {
+	vars.Exts = make(map[string]bool)
+	vars.Exts["js"] = true
+	vars.Exts["css"] = true
+	vars.Exts["html"] = true
+	vars.Exts["htm"] = true
+}
+
 func GenerateSearcher(reposConfig []models.RepoConfig) (map[string]*searcher.Searcher, map[string]bool, bool, error) {
 	errRepos := make(map[string]bool)
 	hasError := false
+	// remove old files
+	os.RemoveAll(vars.REPO_PATH)
 	// Ensure we have a repos path
 	if _, err := os.Stat(vars.REPO_PATH); err != nil {
 		if err := os.MkdirAll(vars.REPO_PATH, os.ModePerm); err != nil {
@@ -186,9 +197,8 @@ func DistributionTask(tasksMap map[int][]models.RepoConfig, rules []models.Rules
 
 func Run(reposConfig []models.RepoConfig, rule models.Rules) {
 	var wg sync.WaitGroup
-	 wg.Add(len(reposConfig))
+	wg.Add(len(reposConfig))
 	for _, rConfig := range reposConfig {
-		// wg.Add(1)
 		reposCfg := make([]models.RepoConfig, 0)
 		reposCfg = append(reposCfg, rConfig)
 
@@ -196,23 +206,31 @@ func Run(reposConfig []models.RepoConfig, rule models.Rules) {
 			defer wg.Done()
 			SaveSearchResult(DoSearch(reposCfg, rule))
 		}(reposCfg, rule)
-		// wg.Wait()
 	}
-	 wg.Wait()
+	wg.Wait()
+	// waitTimeout(&wg, vars.TIME_OUT)
 }
 
 func SaveSearchResult(responses map[string]*index.SearchResponse, rule models.Rules, err error, ) {
 	if err == nil {
 		for repo, resp := range responses {
-			result := models.NewSearchResult(resp.Matches,
-				repo,
-				resp.FilesWithMatch,
-				resp.FilesOpened, resp.Duration,
-				resp.Revision, rule)
+			revision := resp.Revision
+			for _, fileMatches := range resp.Matches {
 
-			has, _ := result.Exist()
-			if ! has {
-				result.Insert()
+				filename := fileMatches.Filename
+				ext := GetExt(filename)
+				if vars.Exts[ext] {
+					continue
+				}
+
+				for _, matches := range fileMatches.Matches {
+					hash := lib.MakeHash(repo, revision, filename, matches.Line)
+					result := models.NewSearchResult(matches, repo, filename, revision, hash, rule)
+					has, err := result.Exist()
+					if err == nil && ! has {
+						result.Insert()
+					}
+				}
 			}
 		}
 	}
@@ -238,4 +256,29 @@ func ScheduleTasks(duration time.Duration) () {
 		logger.Log.Infof("Complete the scan local repos, start to sleep %v seconds", duration*time.Second)
 		time.Sleep(duration * time.Second)
 	}
+}
+
+// waitTimeout waits for the waitgroup for the specified max timeout.
+// Returns true if waiting timed out.
+func waitTimeout(wg *sync.WaitGroup, timeout time.Duration) bool {
+	c := make(chan struct{})
+	go func() {
+		defer close(c)
+		wg.Wait()
+	}()
+	select {
+	case <-c:
+		return false // completed normally
+	case <-time.After(timeout):
+		return true // timed out
+	}
+}
+
+func GetExt(filename string) (ext string) {
+	exts := strings.Split(filename, ".")
+
+	if len(exts) > 1 {
+		ext = exts[len(exts)-1]
+	}
+	return ext
 }

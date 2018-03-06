@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2018 sec.xiaomi.com
+Copyright (c) 2018 sec.lu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,23 @@ THE SOFTWARE.
 
 */
 
-package vars
+package lib
 
-import "time"
-
-const (
-	DefaultPollInterval          = 900
-	DefaultMaxConcurrentIndexers = 2
-	DefaultPollEnabled           = true
-	DefaultVcs                   = "git"
-	DefaultBaseUrl               = "{url}/blob/master/{path}{anchor}"
-	DefaultAnchor                = "#L{line}"
+import (
+	"crypto/md5"
+	"fmt"
+	"io"
 )
 
-var (
-	REPO_PATH    string
-	MAX_INDEXERS int
+// md5 function
+func MD5(s string) (m string) {
+	h := md5.New()
+	io.WriteString(h, s)
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
 
-	HTTP_HOST string
-	HTTP_PORT int
-
-	MAX_Concurrency_REPOS int
-
-	DEBUG_MODE bool
-
-	PAGE_SIZE = 10
-
-	TIME_OUT time.Duration = 60 * 5
-
-	Exts map[string]bool
-)
+// create a sign by key & md5
+func MakeHash(repo, revision, filename, line string) (hash string) {
+	hash = MD5(fmt.Sprintf("%v-%v-%v-%v", repo, revision, filename, line))
+	return hash
+}

@@ -77,7 +77,7 @@
                 检测结果
             </h1>
             <ol class="breadcrumb">
-                <li ><a class="btn btn-success c-add-btn" href="/admin/reports/search/">主页</a></li>
+                <li><a class="btn btn-success c-add-btn" href="/admin/reports/search/">主页</a></li>
                 <li class="btn btn-success c-add-btn">检测结果</li>
             </ol>
         </section>
@@ -107,40 +107,30 @@
                                 <tr align="center">
                                     <th>ID</th>
                                     <th>Filename</th>
+                                    <th>Keyword</th>
                                     <th width="90%" style="word-wrap:break-word;word-break:break-all;">Detail</th>
-                                    <th colspan="2">审核</th>
+                                    <th colspan="3">审核</th>
                                 </tr>
                                 {{range .reports}}
-                                    {{$id:= .Id}}
-                                    {{$repo := .Repo}}
-                                            {{$rule:=.Rule}}
-
-                                    <tr>
-                                        <td rowspan="{{len .Matches}}">{{$id}}</td>
-                                    {{range  .Matches}}
-                                        <td>
-                                        <a href="{{$repo}}/tree/master/{{.Filename}}" target="_blank">{{$repo}}/tree/master/{{.Filename}}</a> <br>
-                                           <font color="red">{{$rule.Pattern}}</font>
-                                        </td>
-                                    <td width="90%" style="word-wrap:break-word;word-break:break-all;">
-                                        {{range .Matches}}
+                                <tr>
+                                    <td>{{.Id}}</td>
+                                    <td><a href="{{.Repo}}/tree/master/{{.Filename}}" target="_blank">{{.Repo}}/tree/master/{{.Filename}}</a></td>
+                                    <td>{{.Rule.Pattern}}</td>
+                                    <td>
                                         <code class="prettyprint linenums lang-go">
-                                        {{ range .Before }}
-                                            {{ . }}<br>
+                                        {{ range .Match.Before }}
+                                        {{ . }}<br>
                                         {{end }}
-                                        <P>{{.LineNumber}} {{.Line  }}</P>
-                                        {{range .After}}
+                                            <P>  {{.Match.LineNumber}}{{.Match.Line}}</P>
+                                        {{range .Match.After}}
                                         {{ . }}<br>
                                         {{end }}
                                         </code>
-                                        {{end}}
                                     </td>
-                                        <td><a href="/admin/reports/search/confirm/{{$id}}">确认</a></td>
-                                        <td><a href="/admin/reports/search/cancel/{{$id}}">忽略文件</a></td>
-                                        <td><a href="/admin/reports/search/disable_repo/{{$id}}">忽略仓库</a></td>
-                                    </tr>
-                                    {{end}}
-
+                                    <td><a href="/admin/reports/search/confirm/{{.Id}}">确认</a></td>
+                                    <td><a href="/admin/reports/search/cancel/{{.Id}}">忽略文件</a></td>
+                                    <td><a href="/admin/reports/search/disable_repo/{{.Id}}">忽略仓库</a></td>
+                                </tr>
                                 {{end}}
                                 </thead>
                             </table>

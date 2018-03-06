@@ -106,7 +106,7 @@ func (r *IndexRef) Open() (*Index, error) {
 
 func (r *IndexRef) Remove() error {
 	return nil
-	//return os.RemoveAll(r.dir)
+	return os.RemoveAll(r.dir)
 }
 
 func (n *Index) Close() error {

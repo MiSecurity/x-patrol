@@ -78,6 +78,7 @@ func init() {
 		Engine.Sync(new(UrlPattern))
 		Engine.Sync2(new(GithubToken))
 		Engine.Sync2(new(CodeResult))
+		// Engine.Sync2(new(index.Match))
 
 		InitRules()
 		InitAdmin()

@@ -26,13 +26,13 @@ package githubsearch
 
 import (
 	"x-patrol/models"
+	"x-patrol/logger"
 
 	"github.com/google/go-github/github"
 
 	"encoding/json"
 	"time"
 	"sync"
-	"x-patrol/logger"
 )
 
 var (

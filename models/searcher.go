@@ -27,42 +27,47 @@ package models
 import (
 	"x-patrol/util/index"
 	"x-patrol/vars"
-
-	"time"
 )
 
 type SearchResult struct {
-	Id             int64
-	Repo           string
-	Matches        []*index.FileMatch `xorm:"LONGBLOB"`
-	FilesWithMatch int
-	FilesOpened    int                `json:"-"`
-	Duration       time.Duration      `json:"-"`
-	Revision       string
-	Rule           Rules
-	Status         int                `xorm:"int default 0 notnull"`
+	Id       int64
+	Repo     string
+	Filename string
+	Match    *index.Match `xorm:"extends"`
+	// FilesWithMatch int
+	// FilesOpened    int                `json:"-"`
+	// Duration       time.Duration      `json:"-"`
+	Revision string
+	Hash     string
+	Rule     Rules
+	Status   int `xorm:"int default 0 notnull"`
 }
 
 func NewSearchResult(
-	matches []*index.FileMatch,
+	match *index.Match,
 	repo string,
-	FilesWithMatch int,
-	FilesOpened int,
-	duration time.Duration,
+	filename string,
+// FilesWithMatch int,
+// FilesOpened int,
+// duration time.Duration,
 	revision string,
+	hash string,
 	rule Rules) (*SearchResult) {
-	return &SearchResult{Matches: matches, Repo: repo, FilesWithMatch: FilesWithMatch,
-		FilesOpened: FilesOpened, Duration: duration, Revision: revision, Rule: rule}
+	return &SearchResult{Match: match, Repo: repo, Filename: filename, Revision: revision, Hash: hash, Rule: rule}
 }
 
 func (s *SearchResult) Insert() (err error) {
-	_, err = Engine.Insert(s)
+	has, err := s.Exist()
+	if !has {
+		_, err = Engine.Insert(s)
+	}
+
 	return err
 }
 
 func (s *SearchResult) Exist() (bool, error) {
 	result := new(SearchResult)
-	return Engine.Table("search_result").Where("revision=? and repo=?", s.Revision, s.Repo).Get(&result)
+	return Engine.Table("search_result").Where("hash=?", s.Hash).Get(result)
 
 }
 
@@ -117,6 +122,20 @@ func CancelSearchResultById(id int64) (err error) {
 		result.Status = 2
 		_, err = Engine.ID(id).Update(result)
 	}
+	return err
+}
+
+func CancelSearchResultByFileName(filename string) (err error) {
+
+	_, err = Engine.Table("search_result").Exec("update search_result set status=2 where filename=?", filename)
+
+	return err
+}
+
+func CancelSearchResultByRepo(repo string) (err error) {
+
+	_, err = Engine.Table("search_result").Exec("update search_result set status=2 where repo=?", repo)
+
 	return err
 }
 
