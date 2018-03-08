@@ -85,24 +85,28 @@ func RunSearchTask(mapRules map[int][]models.Rules, err error) () {
 	}
 }
 
-func SaveResult(result *github.CodeSearchResult, resp *github.Response, err error) () {
-	if err == nil && len(result.CodeResults) > 0 {
-		for _, resultItem := range result.CodeResults {
-			ret, err := json.Marshal(resultItem)
-			if err == nil {
-				var codeResult *models.CodeResult
-				err = json.Unmarshal(ret, &codeResult)
-				fullName := codeResult.Repository.GetFullName()
-				repoUrl := codeResult.Repository.GetHTMLURL()
-				codeResult.RepoName = fullName
-				inputInfo := models.NewInputInfo("repo", repoUrl, fullName)
-				has, err := inputInfo.Exist(repoUrl)
-				if err == nil && !has {
-					inputInfo.Insert()
-				}
-				exist, err := codeResult.Exist()
-				if err == nil && !exist {
-					codeResult.Insert()
+func SaveResult(results []*github.CodeSearchResult, err error) () {
+	for _, result := range results {
+		if err == nil && len(result.CodeResults) > 0 {
+			for _, resultItem := range result.CodeResults {
+				ret, err := json.Marshal(resultItem)
+				if err == nil {
+					var codeResult *models.CodeResult
+					err = json.Unmarshal(ret, &codeResult)
+					fullName := codeResult.Repository.GetFullName()
+					repoUrl := codeResult.Repository.GetHTMLURL()
+					codeResult.RepoName = fullName
+
+					inputInfo := models.NewInputInfo("repo", repoUrl, fullName)
+					has, err := inputInfo.Exist(repoUrl)
+					if err == nil && !has {
+						inputInfo.Insert()
+					}
+					exist, err := codeResult.Exist()
+					logger.Log.Infoln(exist, err)
+					if err == nil && !exist {
+						logger.Log.Infoln(codeResult.Insert())
+					}
 				}
 			}
 		}

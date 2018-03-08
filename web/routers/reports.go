@@ -152,6 +152,7 @@ func ListLocalSearchResultPage(ctx *macaron.Context, sess session.Store) {
 
 	if sess.Get("admin") != nil {
 		reports, pages, _ := models.ListSearchResultPage(p)
+
 		pList := 0
 		if pages-p > 10 {
 			pList = p + 10

@@ -105,7 +105,7 @@ func ListGithubSearchResultPage(page int) ([]CodeResult, int, error) {
 		page = 1
 	}
 
-	err = Engine.Where("status=0").Omit("repository").Limit(vars.PAGE_SIZE, (page-1)*vars.PAGE_SIZE).Find(&results)
+	err = Engine.Where("status=0").Omit("repository").Desc("id").Limit(vars.PAGE_SIZE, (page-1)*vars.PAGE_SIZE).Find(&results)
 
 	return results, pages, err
 }

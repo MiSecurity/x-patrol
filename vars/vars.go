@@ -48,7 +48,7 @@ var (
 
 	PAGE_SIZE = 10
 
-	TIME_OUT time.Duration = 60 * 5
+	TIME_OUT time.Duration = 60 * 4
 
 	Exts map[string]bool
 )
