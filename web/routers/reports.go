@@ -31,6 +31,7 @@ import (
 	"github.com/go-macaron/session"
 
 	"strconv"
+	"net/url"
 )
 
 func ListGithubSearchResult(ctx *macaron.Context, sess session.Store) {
@@ -88,10 +89,19 @@ func ListGithubSearchResult(ctx *macaron.Context, sess session.Store) {
 
 func ConfirmReportById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
+		refer := "/admin/reports/github/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.ConfirmReportById(int64(Id))
-		ctx.Redirect("/admin/reports/github/")
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -99,10 +109,19 @@ func ConfirmReportById(ctx *macaron.Context, sess session.Store) {
 
 func CancelReportById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
+		refer := "/admin/reports/github/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.CancelReportById(int64(Id))
-		ctx.Redirect("/admin/reports/github/")
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -113,12 +132,21 @@ func DisableRepoById(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 
+		refer := "/admin/reports/github/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+
 		has, result, err := models.GetReportById(int64(Id))
 		if err == nil && has {
 			models.DisableRepoByUrl(result.Repository.GetHTMLURL())
 		}
 		models.CancelReportById(int64(Id))
-		ctx.Redirect("/admin/reports/github/")
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -198,7 +226,15 @@ func ConfirmSearchResultById(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.ConfirmSearchResultById(int64(Id))
-		ctx.Redirect("/admin/reports/search/")
+		refer := "/admin/reports/search/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
 		//ctx.HTML(200, "back")
 	} else {
 		ctx.Redirect("/admin/login/")
@@ -210,8 +246,16 @@ func CancelSearchResultById(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.CancelSearchResultById(int64(Id))
-		ctx.Redirect("/admin/reports/search/")
-		// ctx.HTML(200, "back")
+
+		refer := "/admin/reports/search/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -227,8 +271,16 @@ func DisableSearchRepoById(ctx *macaron.Context, sess session.Store) {
 			models.DisableRepoByUrl(repoUrl)
 		}
 		models.CancelSearchResultById(int64(Id))
-		// ctx.HTML(200, "back")
-		ctx.Redirect("/admin/reports/search/")
+		refer := "/admin/reports/search/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
+		
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
