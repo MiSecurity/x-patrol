@@ -121,6 +121,8 @@ func CancelSearchResultById(id int64) (err error) {
 	if err == nil && has {
 		result.Status = 2
 		_, err = Engine.ID(id).Update(result)
+		repoName := result.Repo
+		err = CancelSearchResultByRepo(repoName)
 	}
 	return err
 }

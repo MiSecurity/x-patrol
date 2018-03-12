@@ -105,7 +105,8 @@ func ListGithubSearchResultPage(page int) ([]CodeResult, int, error) {
 		page = 1
 	}
 
-	err = Engine.Where("status=0").Omit("repository").Desc("id").Limit(vars.PAGE_SIZE, (page-1)*vars.PAGE_SIZE).Find(&results)
+	err = Engine.Where("status=0").Omit("repository").Desc("id").Limit(vars.PAGE_SIZE,
+		(page-1)*vars.PAGE_SIZE).Find(&results)
 
 	return results, pages, err
 }
@@ -133,6 +134,16 @@ func CancelReportById(id int64) (err error) {
 	if err == nil && has {
 		report.Status = 2
 		_, err = Engine.Id(id).Cols("status").Update(report)
+		repoName := report.RepoName
+		CancelReportByRepo(repoName)
 	}
+	return err
+}
+
+
+func CancelReportByRepo(repo string) (err error) {
+
+	_, err = Engine.Table("code_result").Exec("update code_result set status=2 where repo_name=?", repo)
+
 	return err
 }
