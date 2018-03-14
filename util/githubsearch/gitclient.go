@@ -153,7 +153,8 @@ func (c *Client) SearchCode(keyword string) ([]*github.CodeSearchResult, error) 
 			}
 		}
 
-		copy(result.CodeResults, t)
+		// copy(result.CodeResults, t)
+		result.CodeResults = t
 
 		logger.Log.Infoln(resp.Remaining, err1, resp.LastPage)
 		if resp.Remaining <= 5 {
