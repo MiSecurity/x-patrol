@@ -140,6 +140,21 @@ func (c *Client) SearchCode(keyword string) ([]*github.CodeSearchResult, error) 
 
 	for {
 		result, resp, err1 := c.Client.Search.Code(ctx, keyword, opt)
+
+		t := make([]github.CodeResult, 0)
+		for _, codeResult := range result.CodeResults {
+			id := codeResult.Repository.GetID()
+			repo, _, _ := c.Client.Repositories.GetByID(ctx, id)
+			pushTime := repo.GetPushedAt().Time
+			now := time.Now()
+			if now.Sub(pushTime).Hours()/24 < 60 {
+				// logger.Log.Infof("%v: %v", pushTime, repo.GetFullName())
+				t = append(t, codeResult)
+			}
+		}
+
+		copy(result.CodeResults, t)
+
 		logger.Log.Infoln(resp.Remaining, err1, resp.LastPage)
 		if resp.Remaining <= 5 {
 			time.Sleep(60 * time.Second)

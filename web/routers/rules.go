@@ -34,6 +34,7 @@ import (
 
 	"strings"
 	"strconv"
+	"net/url"
 )
 
 func ListRules(ctx *macaron.Context, sess session.Store) {
@@ -142,7 +143,17 @@ func DoEditRules(ctx *macaron.Context, sess session.Store) {
 		status := strings.TrimSpace(ctx.Req.Form.Get("status"))
 		intStatus, _ := strconv.Atoi(status)
 		models.EditRuleById(int64(Id), part, Type, content, caption, desc, intStatus)
-		ctx.Redirect("/admin/rules/list/")
+
+		refer := "/admin/rules/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
+
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -153,7 +164,15 @@ func DeleteRules(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.DeleteRulesById(int64(Id))
-		ctx.Redirect("/admin/rules/list/")
+		refer := "/admin/rules/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -164,7 +183,15 @@ func EnableRules(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.EnableRulesById(int64(Id))
-		ctx.Redirect("/admin/rules/list/")
+		refer := "/admin/rules/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -175,7 +202,15 @@ func DisableRules(ctx *macaron.Context, sess session.Store) {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.DisableRulesById(int64(Id))
-		ctx.Redirect("/admin/rules/list/")
+		refer := "/admin/rules/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}

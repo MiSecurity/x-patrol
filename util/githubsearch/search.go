@@ -95,6 +95,9 @@ func SaveResult(results []*github.CodeSearchResult, err error) () {
 					err = json.Unmarshal(ret, &codeResult)
 					fullName := codeResult.Repository.GetFullName()
 					repoUrl := codeResult.Repository.GetHTMLURL()
+
+					logger.Log.Infof("fullName: %v， repoUrl： %v", fullName, repoUrl)
+					break
 					codeResult.RepoName = fullName
 
 					inputInfo := models.NewInputInfo("repo", repoUrl, fullName)
