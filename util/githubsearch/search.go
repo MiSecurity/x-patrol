@@ -96,8 +96,8 @@ func SaveResult(results []*github.CodeSearchResult, err error) () {
 					fullName := codeResult.Repository.GetFullName()
 					repoUrl := codeResult.Repository.GetHTMLURL()
 
-					logger.Log.Infof("fullName: %v， repoUrl： %v", fullName, repoUrl)
-					break
+					// logger.Log.Infof("fullName: %v， repoUrl： %v", fullName, repoUrl)
+
 					codeResult.RepoName = fullName
 
 					inputInfo := models.NewInputInfo("repo", repoUrl, fullName)
