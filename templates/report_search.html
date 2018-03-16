@@ -102,13 +102,13 @@
                                     <li><a href="/admin/reports/search/{{.pages}}">最后一页</a></li>
                                 </ul>
                             </div>
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered table-hover" width="90%">
                                 <thead>
                                 <tr align="center">
                                     <th>ID</th>
                                     <th>Filename</th>
                                     <th>Keyword</th>
-                                    <th width="90%" style="word-wrap:break-word;word-break:break-all;">Detail</th>
+                                    <th width="40%">Detail</th>
                                     <th colspan="3">审核</th>
                                 </tr>
                                 {{range .reports}}
@@ -116,7 +116,7 @@
                                     <td>{{.Id}}</td>
                                     <td><a href="{{.Repo}}/tree/master/{{.Filename}}" target="_blank">{{.Repo}}/tree/master/{{.Filename}}</a></td>
                                     <td>{{.Rule.Pattern}}</td>
-                                    <td>
+                                    <td width="40%">
                                         <code class="prettyprint linenums lang-go">
                                         {{ range .Match.Before }}
                                         {{ . }}<br>

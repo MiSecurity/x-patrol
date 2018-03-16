@@ -116,6 +116,9 @@ func SearchRepos(
 	for i := 0; i < num; i++ {
 
 		r := <-ch
+		if r == nil {
+			continue
+		}
 		r.res.RuleId = rule.Id
 		r.res.RuleCaption = rule.Caption
 		r.res.RulePattern = rule.Pattern
@@ -257,7 +260,8 @@ func ScheduleTasks(duration time.Duration) () {
 
 		logger.Log.Infof("Complete the scan local repos, start to sleep %v seconds", duration*time.Second)
 		// remove old files
-		os.RemoveAll(vars.REPO_PATH)
+		err = os.RemoveAll(vars.REPO_PATH)
+		logger.Log.Info("clean local repos files, err: %v", err)
 		time.Sleep(duration * time.Second)
 	}
 }

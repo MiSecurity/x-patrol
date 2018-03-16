@@ -101,25 +101,29 @@
                                     <li><a href="/admin/reports/github/{{.pages}}">最后一页</a></li>
                                 </ul>
                             </div>
-                            <table class="table table-striped table-bordered table-hover">
+                            <table class="table table-striped table-bordered table-hover" width="90%">
                                 <thead>
                                 <tr align="center">
                                     <th>ID</th>
                                     <th>Name</th>
-                                    <th>Detail</th>
+                                    <th width="40%">Detail</th>
+                                    <th>UpdateTime</th>
                                     <th colspan="3">审核</th>
                                 </tr>
                                 {{range .reports}}
                                 <tr>
                                     <td>{{.Id}}</td>
                                     <td><a href="{{.HTMLURL}}" target="_blank">{{.RepoName}} > {{.Name}}</a></td>
-                                    <td>
-                                    <pre class="prettyprint linenums" >{{range  .TextMatches}}
+                                    <td width="40%">
+                                    <pre class="prettyprint linenums">{{range .TextMatches}}
                                     {{range Split .Fragment }}
                                       {{.}}<br>
                                     {{end}}
                                     {{end}}
                                     </pre>
+                                    </td>
+                                    <td>
+                                        {{.UpdatedTime.Format "2006-01-02 15:04:05"}}
                                     </td>
                                     <td><a href="/admin/reports/github/confirm/{{.Id}}">确认</a></td>
                                     <td><a href="/admin/reports/github/cancel/{{.Id}}">忽略文件</a></td>
