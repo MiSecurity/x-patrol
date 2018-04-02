@@ -46,11 +46,11 @@ func GenerateSearchCodeTask() (map[int][]models.Rules, error) {
 	batch := ruleNum / SEARCH_NUM
 
 	for i := 0; i < batch; i++ {
-		result[i] = rules[SEARCH_NUM*i:SEARCH_NUM*(i+1)]
+		result[i] = rules[SEARCH_NUM*i : SEARCH_NUM*(i+1)]
 	}
 
 	if ruleNum%SEARCH_NUM != 0 {
-		result[batch] = rules[SEARCH_NUM*batch:ruleNum]
+		result[batch] = rules[SEARCH_NUM*batch : ruleNum]
 	}
 	return result, err
 }
@@ -63,10 +63,8 @@ func Search(rules []models.Rules) () {
 		for _, rule := range rules {
 			go func(rule models.Rules) {
 				defer wg.Done()
-
+				SaveResult(client.SearchCode(rule.Pattern))
 			}(rule)
-
-			SaveResult(client.SearchCode(rule.Pattern))
 		}
 		wg.Wait()
 	}
