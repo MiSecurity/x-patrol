@@ -39,7 +39,7 @@ import (
 
 func AdminIndex(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
-		ctx.Redirect("/admin/assets/")
+		ctx.Redirect("/admin/reports/github/")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}

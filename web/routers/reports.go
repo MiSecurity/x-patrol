@@ -213,6 +213,26 @@ func ConfirmReportById(ctx *macaron.Context, sess session.Store) {
 	}
 }
 
+
+func ResetReportById(ctx *macaron.Context, sess session.Store) {
+	if sess.Get("admin") != nil {
+		refer := "/admin/reports/github/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		id := ctx.Params(":id")
+		Id, _ := strconv.Atoi(id)
+		models.ResetReportById(int64(Id))
+		ctx.Redirect(refer)
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
 func CancelReportById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
 		refer := "/admin/reports/github/"

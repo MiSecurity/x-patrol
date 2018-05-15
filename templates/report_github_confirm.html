@@ -58,7 +58,8 @@
             <ul class="sidebar-menu">
                 <li class="header">检测报告</li>
                 <li><a href="/admin/reports/github/"><i class="fa fa-dashboard"></i> <span>github搜索报告</span></a></li>
-                <li class="active"><a href="/admin/reports/history/"><i class="fa fa-dashboard"></i> <span>历史报告</span></a></li>
+                <li class="active"><a href="/admin/reports/confirm/"><i class="fa fa-dashboard"></i> <span>已确认结果</span></a></li>
+                <li><a href="/admin/reports/history/"><i class="fa fa-dashboard"></i> <span>历史报告</span></a></li>
                 <li><a href="/admin/reports/search/"><i class="fa fa-dashboard"></i> <span>本地检测报告</span></a></li>
                 <li class="header">后台管理</li>
               {{/*  <li><a href="/admin/assets/"><i class="fa fa-rmb"></i> <span>资产管理</span></a></li>
@@ -109,7 +110,6 @@
                                     <th>Name</th>
                                     <th width="40%">Detail</th>
                                     <th>UpdateTime</th>
-                                    <th colspan="1">移出白名单</th>
                                 </tr>
                                 {{range .reports}}
                                 <tr>
@@ -126,7 +126,6 @@
                                     <td>
                                         {{.UpdatedTime.Format "2006-01-02 15:04:05"}}
                                     </td>
-                                    <td><a href="/admin/reports/github/reset/{{.Id}}">确认</a></td>
                                 </tr>
                                 {{end}}
                                 </thead>
