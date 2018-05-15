@@ -164,6 +164,8 @@ func RunWeb(ctx *cli.Context) {
 
 		m.Group("/reports/", func() {
 			m.Get("/github/", routers.ListGithubSearchResult)
+			m.Get("/history/", routers.ListHistoryGithubSearchResult)
+			m.Get("/confirm/", routers.ListConfirmGithubSearchResult)
 			m.Get("/github/:page", routers.ListGithubSearchResult)
 			m.Get("/github/confirm/:id", routers.ConfirmReportById)
 			m.Get("/github/cancel/:id", routers.CancelReportById)

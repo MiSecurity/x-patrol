@@ -87,6 +87,113 @@ func ListGithubSearchResult(ctx *macaron.Context, sess session.Store) {
 	}
 }
 
+func ListHistoryGithubSearchResult(ctx *macaron.Context, sess session.Store) {
+	page := ctx.Params(":page")
+	p, _ := strconv.Atoi(page)
+	if p < 1 {
+		p = 1
+	}
+	pre := p - 1
+	if pre <= 0 {
+		pre = 1
+	}
+	next := p + 1
+	if sess.Get("admin") != nil {
+		reports, pages, _ := models.ListHistoryGithubSearchResultPage(p)
+		pList := 0
+		if pages-p > 10 {
+			pList = p + 10
+		} else {
+			pList = pages
+		}
+
+		pageList := make([]int, 0)
+		if pages <= 10 {
+			for i := 1; i <= pList; i++ {
+				pageList = append(pageList, i)
+			}
+		} else {
+			if p <= 10 {
+				for i := 1; i <= pList; i++ {
+					pageList = append(pageList, i)
+				}
+			} else {
+				t := p + 5
+				if t > pages {
+					t = pages
+				}
+				for i := p - 5; i <= t; i++ {
+					pageList = append(pageList, i)
+				}
+			}
+		}
+
+		ctx.Data["reports"] = reports
+		ctx.Data["pages"] = pages
+		ctx.Data["page"] = p
+		ctx.Data["pre"] = pre
+		ctx.Data["next"] = next
+		ctx.Data["pageList"] = pageList
+		ctx.HTML(200, "report_github_history")
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
+
+func ListConfirmGithubSearchResult(ctx *macaron.Context, sess session.Store) {
+	page := ctx.Params(":page")
+	p, _ := strconv.Atoi(page)
+	if p < 1 {
+		p = 1
+	}
+	pre := p - 1
+	if pre <= 0 {
+		pre = 1
+	}
+	next := p + 1
+	if sess.Get("admin") != nil {
+		reports, pages, _ := models.ListConfirmGithubResultPage(p)
+		pList := 0
+		if pages-p > 10 {
+			pList = p + 10
+		} else {
+			pList = pages
+		}
+
+		pageList := make([]int, 0)
+		if pages <= 10 {
+			for i := 1; i <= pList; i++ {
+				pageList = append(pageList, i)
+			}
+		} else {
+			if p <= 10 {
+				for i := 1; i <= pList; i++ {
+					pageList = append(pageList, i)
+				}
+			} else {
+				t := p + 5
+				if t > pages {
+					t = pages
+				}
+				for i := p - 5; i <= t; i++ {
+					pageList = append(pageList, i)
+				}
+			}
+		}
+
+		ctx.Data["reports"] = reports
+		ctx.Data["pages"] = pages
+		ctx.Data["page"] = p
+		ctx.Data["pre"] = pre
+		ctx.Data["next"] = next
+		ctx.Data["pageList"] = pageList
+		ctx.HTML(200, "report_github_confirm")
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
 func ConfirmReportById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
 		refer := "/admin/reports/github/"
@@ -97,7 +204,6 @@ func ConfirmReportById(ctx *macaron.Context, sess session.Store) {
 				refer = urlParsed.RequestURI()
 			}
 		}
-
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
 		models.ConfirmReportById(int64(Id))
@@ -280,7 +386,7 @@ func DisableSearchRepoById(ctx *macaron.Context, sess session.Store) {
 			}
 		}
 		ctx.Redirect(refer)
-		
+
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
