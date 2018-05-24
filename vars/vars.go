@@ -29,7 +29,7 @@ import "time"
 const (
 	DefaultPollInterval          = 900
 	DefaultMaxConcurrentIndexers = 2
-	DefaultPollEnabled           = true
+	DefaultPollEnabled           = false
 	DefaultVcs                   = "git"
 	DefaultBaseUrl               = "{url}/blob/master/{path}{anchor}"
 	DefaultAnchor                = "#L{line}"

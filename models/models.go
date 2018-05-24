@@ -83,6 +83,7 @@ func init() {
 		InitRules()
 		InitAdmin()
 		InitUrlPattern()
+
 	}
 }
 

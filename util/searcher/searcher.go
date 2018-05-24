@@ -305,7 +305,7 @@ func MakeAll(reposCfg []models.RepoConfig) (map[string]*Searcher, map[string]err
 	for _, repoCfg := range reposCfg {
 		s, err := newSearcher(vars.REPO_PATH, repoCfg.Name, &repoCfg, refs, lim)
 		if err != nil {
-			logger.Log.Errorln(err, "open file error AAA")
+			logger.Log.Errorf("open file error: %v", err)
 			errs[repoCfg.Name] = err
 			continue
 		}

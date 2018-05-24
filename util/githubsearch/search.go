@@ -92,17 +92,16 @@ func SaveResult(results []*github.CodeSearchResult, err error) () {
 					var codeResult *models.CodeResult
 					err = json.Unmarshal(ret, &codeResult)
 					fullName := codeResult.Repository.GetFullName()
-					repoUrl := codeResult.Repository.GetHTMLURL()
-
-					// logger.Log.Infof("fullName: %v， repoUrl： %v", fullName, repoUrl)
-
 					codeResult.RepoName = fullName
 
-					inputInfo := models.NewInputInfo("repo", repoUrl, fullName)
-					has, err := inputInfo.Exist(repoUrl)
-					if err == nil && !has {
-						inputInfo.Insert()
-					}
+					// 不在自动保存需要本地检测的库了，本地检测的库通过手工输入的方式添加
+					// repoUrl := codeResult.Repository.GetHTMLURL()
+					//inputInfo := models.NewInputInfo("repo", repoUrl, fullName)
+					//has, err := inputInfo.Exist(repoUrl)
+					//if err == nil && !has {
+					//	inputInfo.Insert()
+					//}
+
 					exist, err := codeResult.Exist()
 					logger.Log.Infoln(exist, err)
 					if err == nil && !exist {
@@ -119,7 +118,8 @@ func ScheduleTasks(duration time.Duration) {
 		RunSearchTask(GenerateSearchCodeTask())
 
 		// insert repos from inputInfo
-		InsertAllRepos()
+		// 修改逻辑，不再自动进行本地检测了，而是通过手工指定的方式配置要扫描的库
+		// InsertAllRepos()
 
 		logger.Log.Infof("Complete the scan of Github, start to sleep %v seconds", duration*time.Second)
 		time.Sleep(duration * time.Second)

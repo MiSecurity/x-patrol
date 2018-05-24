@@ -30,12 +30,33 @@ import (
 	"time"
 )
 
-type UrlPattern struct {
-	Id      int64
-	BaseUrl string `json:"base-url"`
-	Anchor  string `json:"anchor"`
-	Vcs     string `json:"vcs"`
-}
+type (
+	UrlPattern struct {
+		Id      int64
+		BaseUrl string `json:"base-url"`
+		Anchor  string `json:"anchor"`
+		Vcs     string `json:"vcs"`
+	}
+
+	VcsConfig struct {
+		Id       int64
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	RepoConfig struct {
+		Id              int64
+		Name            string        `json:"name"`
+		Url             string        `json:"url"`
+		PollInterval    time.Duration `json:"poll_interval"`
+		Vcs             string        `json:"vcs"`
+		UrlPattern      UrlPattern    `json:"url_pattern"`
+		VcsConfig       VcsConfig     `json:"vcs_config"`
+		AutoPullUpdate  bool          `json:"auto_pull_update"`
+		ExcludeDotFiles bool          `json:"exclude_dot_files"`
+		Status          int           `json:"status"`
+	}
+)
 
 func NewUrlParttern(baseUrl, anchor, vcs string) (*UrlPattern) {
 	return &UrlPattern{BaseUrl: baseUrl, Anchor: anchor, Vcs: vcs}
@@ -49,11 +70,30 @@ func (u *UrlPattern) Insert() (int64, error) {
 	return Engine.Insert(u)
 }
 
+func ListUrlPattern() ([]UrlPattern, error) {
+	UrlPatterns := make([]UrlPattern, 0)
+	err := Engine.Find(&UrlPatterns)
+	return UrlPatterns, err
+}
+
 func InitUrlPattern() () {
-	u := NewUrlParttern(vars.DefaultBaseUrl, vars.DefaultAnchor, "git")
-	has, err := u.Exist()
-	if err == nil && !has {
-		u.Insert()
+	urlPatterns := make([]*UrlPattern, 0)
+
+	gitPattern := NewUrlParttern(vars.DefaultBaseUrl, vars.DefaultAnchor, "git")
+	svnPattern := NewUrlParttern("{url}/{path}{anchor}", "", "svn")
+	localPatten := NewUrlParttern("", "", "local")
+	bitbucketPatten := NewUrlParttern("{url}/src/master/{path}{anchor}", "#{filename}-{line}", "bitbucket")
+
+	urlPatterns = append(urlPatterns, gitPattern)
+	urlPatterns = append(urlPatterns, svnPattern)
+	urlPatterns = append(urlPatterns, localPatten)
+	urlPatterns = append(urlPatterns, bitbucketPatten)
+
+	for _, u := range urlPatterns {
+		has, err := u.Exist()
+		if err == nil && !has {
+			u.Insert()
+		}
 	}
 }
 
@@ -63,27 +103,16 @@ func GetUrlPattern(vcs string) (bool, error, *UrlPattern) {
 	return has, err, u
 }
 
-type RepoConfig struct {
-	Id              int64
-	Name            string        `json:"name"`
-	Url             string        `json:"url"`
-	PollInterval    time.Duration `json:"poll_interval"`
-	Vcs             string        `json:"vcs"`
-	UrlPattern      UrlPattern    `json:"url_pattern"`
-	AutoPullUpdate  bool          `json:"auto_pull_update"`
-	ExcludeDotFiles bool          `json:"exclude_dot_files"`
-}
-
 func NewRepoConfig(name string,
 	url string,
 	interval time.Duration,
 	vcs string,
 	urlPat UrlPattern,
+	vcsConf VcsConfig,
 	isPull bool,
 	isExclude bool) (*RepoConfig) {
 	return &RepoConfig{Name: name, Url: url, PollInterval: interval, Vcs: vcs, UrlPattern: urlPat,
-		AutoPullUpdate: isPull,
-		ExcludeDotFiles: isExclude}
+		VcsConfig: vcsConf, AutoPullUpdate: isPull, ExcludeDotFiles: isExclude}
 }
 
 func (r *RepoConfig) Insert() (int64, error) {
@@ -106,24 +135,31 @@ func ListRepoConfig() ([]RepoConfig, error) {
 	return reposConfig, err
 }
 
-func InsertReposConfig() {
-	// first delete all repos config
-	ClearReposConfig()
-	_, _, urlPat := GetUrlPattern("git")
-	repos, err := ListEnableRepos()
-	if err == nil {
-		for _, repo := range repos {
-			repoCnf := NewRepoConfig(repo.Name, repo.Url, vars.DefaultPollInterval, "git",
-				*urlPat, true, false)
-			has, err := repoCnf.Exist()
-			if err == nil && !has {
-				repoCnf.Insert()
-			}
-		}
-	}
+func ListValidRepoConfig() ([]RepoConfig, error) {
+	reposConfig := make([]RepoConfig, 0)
+	err := Engine.Where("status=1").Find(&reposConfig)
+	return reposConfig, err
 }
 
-func ClearReposConfig() (error) {
-	_, err := Engine.Exec("delete from repo_config")
-	return err
-}
+//func InsertReposConfig() {
+//	// first delete all repos config
+//	// ClearReposConfig()
+//	_, _, urlPat := GetUrlPattern("git")
+//	VcsConf := VcsConfig{}
+//	repos, err := ListEnableRepos()
+//	if err == nil {
+//		for _, repo := range repos {
+//			repoCnf := NewRepoConfig(repo.Name, repo.Url, vars.DefaultPollInterval, "git",
+//				*urlPat, VcsConf, true, false)
+//			has, err := repoCnf.Exist()
+//			if err == nil && !has {
+//				repoCnf.Insert()
+//			}
+//		}
+//	}
+//}
+
+//func ClearReposConfig() (error) {
+//	_, err := Engine.Exec("delete from repo_config")
+//	return err
+//}

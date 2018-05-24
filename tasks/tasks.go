@@ -30,7 +30,6 @@ import (
 	"x-patrol/models"
 	"x-patrol/vars"
 	"x-patrol/logger"
-	"x-patrol/util/githubsearch"
 	"x-patrol/util/lib"
 
 	"time"
@@ -244,14 +243,13 @@ func SaveSearchResult(responses map[string]*index.SearchResponse, rule models.Ru
 func ScheduleTasks(duration time.Duration) () {
 	for {
 		// insert repos from inputInfo
-		githubsearch.InsertAllRepos()
-
+		// githubsearch.InsertAllRepos()
 		// insert all enable repos to repos config table
-		models.InsertReposConfig()
+		// models.InsertReposConfig()
 
 		rules, err := models.GetRules()
 		if err == nil {
-			reposConfig, err := models.ListRepoConfig()
+			reposConfig, err := models.ListValidRepoConfig()
 			if err == nil {
 				mapTasks := SegmentationTask(reposConfig)
 				DistributionTask(mapTasks, rules)
