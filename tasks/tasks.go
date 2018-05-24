@@ -175,13 +175,13 @@ func SegmentationTask(reposConfig []models.RepoConfig) (map[int][]models.RepoCon
 	scanBatch := totalRepos / vars.MAX_Concurrency_REPOS
 
 	for i := 0; i < scanBatch; i++ {
-		curTask := reposConfig[vars.MAX_Concurrency_REPOS*i:vars.MAX_Concurrency_REPOS*(i+1)]
+		curTask := reposConfig[vars.MAX_Concurrency_REPOS*i : vars.MAX_Concurrency_REPOS*(i+1)]
 		tasks[i] = curTask
 	}
 
 	if totalRepos%vars.MAX_Concurrency_REPOS > 0 {
 		n := len(tasks)
-		tasks[n] = reposConfig[vars.MAX_Concurrency_REPOS*scanBatch:totalRepos]
+		tasks[n] = reposConfig[vars.MAX_Concurrency_REPOS*scanBatch : totalRepos]
 	}
 	return tasks
 }

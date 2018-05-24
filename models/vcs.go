@@ -135,31 +135,63 @@ func ListRepoConfig() ([]RepoConfig, error) {
 	return reposConfig, err
 }
 
+func ListRepoConfigPage(page int) ([]RepoConfig, int, error) {
+	reposConf := make([]RepoConfig, 0)
+	totalPages, err := Engine.Table("repo_config").Count()
+	var pages int
+
+	if int(totalPages)%vars.PAGE_SIZE == 0 {
+		pages = int(totalPages) / vars.PAGE_SIZE
+	} else {
+		pages = int(totalPages)/vars.PAGE_SIZE + 1
+	}
+
+	if page >= pages {
+		page = pages
+	}
+
+	if page < 1 {
+		page = 1
+	}
+
+	err = Engine.Limit(vars.PAGE_SIZE, (page-1)*vars.PAGE_SIZE).Find(&reposConf)
+	return reposConf, pages, err
+}
+
 func ListValidRepoConfig() ([]RepoConfig, error) {
 	reposConfig := make([]RepoConfig, 0)
 	err := Engine.Where("status=1").Find(&reposConfig)
 	return reposConfig, err
 }
 
-//func InsertReposConfig() {
-//	// first delete all repos config
-//	// ClearReposConfig()
-//	_, _, urlPat := GetUrlPattern("git")
-//	VcsConf := VcsConfig{}
-//	repos, err := ListEnableRepos()
-//	if err == nil {
-//		for _, repo := range repos {
-//			repoCnf := NewRepoConfig(repo.Name, repo.Url, vars.DefaultPollInterval, "git",
-//				*urlPat, VcsConf, true, false)
-//			has, err := repoCnf.Exist()
-//			if err == nil && !has {
-//				repoCnf.Insert()
-//			}
-//		}
-//	}
-//}
+func EnableRepoConfById(id int64) (error) {
+	repoConf := new(RepoConfig)
+	has, err := Engine.ID(id).Get(repoConf)
+	if err == nil && has {
+		repoConf.Status = 1
+		_, err = Engine.ID(id).Cols("status").Update(repoConf)
+	}
+	return err
+}
 
-//func ClearReposConfig() (error) {
-//	_, err := Engine.Exec("delete from repo_config")
-//	return err
-//}
+func DisableRepoConfById(id int64) (error) {
+	repoConf := new(RepoConfig)
+	has, err := Engine.ID(id).Get(repoConf)
+	if err == nil && has {
+		repoConf.Status = 0
+		_, err = Engine.ID(id).Cols("status").Update(repoConf)
+	}
+	return err
+}
+
+func DeleteAllReposConf() (error) {
+	sqlCmd := "delete from repo_conf"
+	_, err := Engine.Exec(sqlCmd)
+	return err
+}
+
+func DeleteRepoConfById(id int64) (err error) {
+	repoConf := new(RepoConfig)
+	_, err = Engine.Id(id).Delete(repoConf)
+	return err
+}

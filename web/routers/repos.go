@@ -30,11 +30,14 @@ import (
 	"gopkg.in/macaron.v1"
 
 	"github.com/go-macaron/session"
+	"github.com/go-macaron/csrf"
 
 	"strconv"
+	"net/url"
+	"strings"
 )
 
-func ListRepos(ctx *macaron.Context, sess session.Store) {
+func ListReposConf(ctx *macaron.Context, sess session.Store) {
 	page := ctx.Params(":page")
 	p, _ := strconv.Atoi(page)
 	if p < 1 {
@@ -47,7 +50,7 @@ func ListRepos(ctx *macaron.Context, sess session.Store) {
 	next := p + 1
 
 	if sess.Get("admin") != nil {
-		repos, pages, _ := models.ListReposPage(p)
+		repos, pages, _ := models.ListRepoConfigPage(p)
 		pList := 0
 		if pages-p > 10 {
 			pList = p + 10
@@ -82,38 +85,125 @@ func ListRepos(ctx *macaron.Context, sess session.Store) {
 		ctx.Data["next"] = next
 		ctx.Data["pageList"] = pageList
 		ctx.Data["repos"] = repos
-		ctx.HTML(200, "repos")
+		ctx.HTML(200, "repos_conf")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
 }
 
-func EnableRepo(ctx *macaron.Context, sess session.Store) {
+func NewRepoConf(ctx *macaron.Context, sess session.Store) {
+	if sess.Get("admin") != nil {
+		ctx.HTML(200, "repo_conf_new")
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
+func DoNewRepoConf(ctx *macaron.Context, sess session.Store) {
+	ctx.Req.ParseForm()
+	if sess.Get("admin") != nil {
+		Type := strings.TrimSpace(ctx.Req.Form.Get("type"))
+		content := strings.TrimSpace(ctx.Req.Form.Get("content"))
+		desc := strings.TrimSpace(ctx.Req.Form.Get("desc"))
+		assets := models.NewInputInfo(Type, content, desc)
+		assets.Insert()
+		ctx.Redirect("/admin/repo/list/")
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
+func EditRepoConf(ctx *macaron.Context, sess session.Store, x csrf.CSRF) {
 	if sess.Get("admin") != nil {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
-		models.EnableRepoById(int64(Id))
-		ctx.Redirect("/admin/repos/list/")
+		assets, _, _ := models.GetInputInfoById(int64(Id))
+		ctx.Data["csrf_token"] = x.GetToken()
+		ctx.Data["assets"] = assets
+		ctx.Data["user"] = sess.Get("admin")
+		ctx.HTML(200, "assets_edit")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
 }
 
-func DisableRepo(ctx *macaron.Context, sess session.Store) {
+func DoEditRepoConf(ctx *macaron.Context, sess session.Store) {
+	ctx.Req.ParseForm()
 	if sess.Get("admin") != nil {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
-		models.DisableRepoById(int64(Id))
-		ctx.Redirect("/admin/repos/list/")
+		Type := strings.TrimSpace(ctx.Req.Form.Get("type"))
+		content := strings.TrimSpace(ctx.Req.Form.Get("content"))
+		desc := strings.TrimSpace(ctx.Req.Form.Get("desc"))
+		models.EditInputInfoById(int64(Id), Type, content, desc)
+		ctx.Redirect("/admin/assets/list/")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
 }
 
-func DeleteAllRepo(ctx *macaron.Context, sess session.Store) {
+func EnableRepoConf(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
-		models.DeleteAllRepos()
-		ctx.Redirect("/admin/repos/list/")
+		id := ctx.Params(":id")
+		Id, _ := strconv.Atoi(id)
+		models.EnableRepoConfById(int64(Id))
+		refer := "/admin/repos/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
+func DisableRepoConf(ctx *macaron.Context, sess session.Store) {
+	if sess.Get("admin") != nil {
+		id := ctx.Params(":id")
+		Id, _ := strconv.Atoi(id)
+		models.DisableRepoConfById(int64(Id))
+		refer := "/admin/repos/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
+func DeleteAllRepoConf(ctx *macaron.Context, sess session.Store) {
+	if sess.Get("admin") != nil {
+		models.DeleteAllReposConf()
+		refer := "/admin/repos/list/"
+		if ctx.Req.Header["Referer"] != nil && len(ctx.Req.Header["Referer"]) > 0 {
+			u := ctx.Req.Header["Referer"][0]
+			urlParsed, err := url.Parse(u)
+			if err == nil {
+				refer = urlParsed.RequestURI()
+			}
+		}
+		ctx.Redirect(refer)
+	} else {
+		ctx.Redirect("/admin/login/")
+	}
+}
+
+func DelRepoConfById(ctx *macaron.Context, sess session.Store) {
+	if sess.Get("admin") != nil {
+		id := ctx.Params(":id")
+		Id, _ := strconv.Atoi(id)
+		models.DisableRepoConfById(int64(Id))
+		refer := "/admin/repos/list/"
+		ctx.Redirect(refer)
 	} else {
 		ctx.Redirect("/admin/login/")
 	}

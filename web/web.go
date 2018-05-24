@@ -153,14 +153,18 @@ func RunWeb(ctx *cli.Context) {
 			m.Get("/disable/:id", routers.DisableRules)
 		})
 
-		/*m.Group("/repos/", func() {
-			m.Get("", routers.ListRepos)
-			m.Get("/list/", routers.ListRepos)
-			m.Get("/list/:page", routers.ListRepos)
-			m.Get("/enable/:id", routers.EnableRepo)
-			m.Get("/disable/:id", routers.DisableRepo)
-			m.Get("/del/", routers.DeleteAllRepo)
-		})*/
+		m.Group("/repos/", func() {
+			m.Get("", routers.ListReposConf)
+			m.Get("/list/", routers.ListReposConf)
+			m.Get("/list/:page", routers.ListReposConf)
+			m.Get("/new/", routers.NewRepoConf)
+			m.Post("/new/", routers.DoNewRepoConf)
+			m.Get("/edit/:id", routers.EditRepoConf)
+			m.Post("/edit/:id", routers.DoEditRepoConf)
+			m.Get("/enable/:id", routers.EnableRepoConf)
+			m.Get("/disable/:id", routers.DisableRepoConf)
+			m.Get("/del/:id", routers.DelRepoConfById)
+		})
 
 		m.Group("/reports/", func() {
 			m.Get("/github/", routers.ListGithubSearchResult)
