@@ -32,3 +32,10 @@ Github leaked patrol为一款github泄露巡航工具：
 ![](http://docs.xsec.io/images/github/report1.png)
     1. 本地repos详细搜索结果审核：
 ![](http://docs.xsec.io/images/github/report2.png)
+
+## 更新记录
+### 2018/5/25，修改了本地扫描的逻辑
+1. 只扫描在后台添加的仓库了
+1. 同时支持git远程地址和本地地址，格式如下：
+![](http://docs.xsec.io/images/github/local_check.jpg)
+
