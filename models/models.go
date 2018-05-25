@@ -28,7 +28,7 @@ import (
 	"x-patrol/settings"
 	"x-patrol/logger"
 
-	_ "github.com/mattn/go-sqlite3"
+	//_ "github.com/mattn/go-sqlite3"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 
@@ -90,13 +90,13 @@ func init() {
 // init a database instance
 func NewDbEngine() (err error) {
 	switch DATA_TYPE {
-	case "sqlite":
-		cur, _ := filepath.Abs(".")
-		dataSourceName := fmt.Sprintf("%v/%v/%v.db", cur, DATA_PATH, DATA_NAME)
-		logger.Log.Infof("sqlite db: %v", dataSourceName)
-		Engine, err = xorm.NewEngine("sqlite3", dataSourceName)
-		Engine.Logger().SetLevel(core.LOG_OFF)
-		err = Engine.Ping()
+	//case "sqlite":
+	//	cur, _ := filepath.Abs(".")
+	//	dataSourceName := fmt.Sprintf("%v/%v/%v.db", cur, DATA_PATH, DATA_NAME)
+	//	logger.Log.Infof("sqlite db: %v", dataSourceName)
+	//	Engine, err = xorm.NewEngine("sqlite3", dataSourceName)
+	//	Engine.Logger().SetLevel(core.LOG_OFF)
+	//	err = Engine.Ping()
 
 	case "mysql":
 		dataSourceName := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8",
@@ -127,7 +127,7 @@ func NewDbEngine() (err error) {
 func InitRules() () {
 	cur, _ := filepath.Abs(".")
 	ruleFile := fmt.Sprintf("%v/conf/gitrob.json", cur)
-	rules, err := GetRules()
+	rules, err := GetLocalRules()
 	if err == nil && len(rules) == 0 {
 		logger.Log.Infof("Init rules, err: %v", InsertRules(ruleFile))
 	}

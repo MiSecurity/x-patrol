@@ -81,7 +81,7 @@ func InitUrlPattern() () {
 
 	gitPattern := NewUrlParttern(vars.DefaultBaseUrl, vars.DefaultAnchor, "git")
 	svnPattern := NewUrlParttern("{url}/{path}{anchor}", "", "svn")
-	localPatten := NewUrlParttern("", "", "local")
+	localPatten := NewUrlParttern("", "", "git")
 	bitbucketPatten := NewUrlParttern("{url}/src/master/{path}{anchor}", "#{filename}-{line}", "bitbucket")
 
 	urlPatterns = append(urlPatterns, gitPattern)
@@ -112,7 +112,7 @@ func NewRepoConfig(name string,
 	isPull bool,
 	isExclude bool) (*RepoConfig) {
 	return &RepoConfig{Name: name, Url: url, PollInterval: interval, Vcs: vcs, UrlPattern: urlPat,
-		VcsConfig: vcsConf, AutoPullUpdate: isPull, ExcludeDotFiles: isExclude}
+		VcsConfig: vcsConf, AutoPullUpdate: isPull, ExcludeDotFiles: isExclude, Status: 1}
 }
 
 func (r *RepoConfig) Insert() (int64, error) {

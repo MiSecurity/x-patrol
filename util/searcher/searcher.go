@@ -149,7 +149,7 @@ func (s *Searcher) GetExcludedFiles() string {
 	path := filepath.Join(s.idx.GetDir(), "excluded_files.json")
 	dat, err := ioutil.ReadFile(path)
 	if err != nil {
-		logger.Log.Printf("Couldn't read excluded_files.json %v\n", err)
+		logger.Log.Errorf("Couldn't read excluded_files.json %v\n", err)
 	}
 	return string(dat)
 }
@@ -305,7 +305,7 @@ func MakeAll(reposCfg []models.RepoConfig) (map[string]*Searcher, map[string]err
 	for _, repoCfg := range reposCfg {
 		s, err := newSearcher(vars.REPO_PATH, repoCfg.Name, &repoCfg, refs, lim)
 		if err != nil {
-			logger.Log.Errorf("open file error: %v", err)
+			logger.Log.Errorf("open file: %v error: %v", repoCfg.Name, err)
 			errs[repoCfg.Name] = err
 			continue
 		}
@@ -365,7 +365,7 @@ func updateAndReindex(
 		return rev, false
 	}
 
-	logger.Log.Printf("Rebuilding %s for %s", name, newRev)
+	//logger.Log.Printf("Rebuilding %s for %s", name, newRev)
 	idx, err := buildAndOpenIndex(
 		opt,
 		vcsDir,
@@ -373,14 +373,14 @@ func updateAndReindex(
 		repoConfig.Url,
 		newRev)
 	if err != nil {
-		logger.Log.Printf("failed index build (%s): %s", name, err)
+		logger.Log.Errorf("failed index build (%s): %s", name, err)
 		return rev, false
 	}
 
 	if err := s.swapIndexes(idx); err != nil {
-		logger.Log.Printf("failed index swap (%s): %s", name, err)
+		logger.Log.Errorf("failed index swap (%s): %s", name, err)
 		if err := idx.Destroy(); err != nil {
-			logger.Log.Printf("failed to destroy index (%s): %s\n", name, err)
+			logger.Log.Errorf("failed to destroy index (%s): %s\n", name, err)
 		}
 		return rev, false
 	}
@@ -397,8 +397,6 @@ func newSearcher(
 	lim limiter) (*Searcher, error) {
 
 	vcsDir := filepath.Join(dbPath, vcsDirFor(repoConfig))
-
-	logger.Log.Printf("Searcher started for %s", name)
 
 	wd, err := vcs.New(repoConfig.Vcs, nil)
 	if err != nil {

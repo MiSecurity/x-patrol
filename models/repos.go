@@ -26,8 +26,6 @@ package models
 
 import (
 	"x-patrol/vars"
-
-	"fmt"
 )
 
 type Repo struct {
@@ -78,7 +76,6 @@ func ListReposPage(page int) ([]Repo, int, error) {
 	}
 
 	err = Engine.Limit(vars.PAGE_SIZE, (page-1)*vars.PAGE_SIZE).Find(&repos)
-	fmt.Println(err, repos, pages)
 	return repos, pages, err
 }
 

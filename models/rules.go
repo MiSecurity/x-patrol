@@ -52,7 +52,7 @@ func (r *Rules) Insert() (err error) {
 	return err
 }
 
-func GetRules() ([]Rules, error) {
+func GetLocalRules() ([]Rules, error) {
 	rules := make([]Rules, 0)
 	err := Engine.Table("rules").Where("part='keyword' and status=1").Find(&rules)
 	return rules, err

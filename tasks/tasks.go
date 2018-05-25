@@ -106,6 +106,7 @@ func SearchRepos(
 	ch := make(chan *SearchResponse, num)
 	for _, repo := range repos {
 		go func(repo string) {
+			logger.Log.Infof("check repo: %v with rule: %v", repo, query)
 			fms, err := idx[repo].Search(query, opts)
 			ch <- &SearchResponse{repo, fms, err}
 		}(repo)
@@ -226,13 +227,12 @@ func SaveSearchResult(responses map[string]*index.SearchResponse, rule models.Ru
 
 				for _, matches := range fileMatches.Matches {
 					hash := lib.MakeHash(repo, revision, filename, matches.Line)
-					logger.Log.Infof("repo:%v, revision:%v, filename: %v, matches Line: %v", repo,
-						revision, filename, matches.Line)
+					// logger.Log.Infof("repo:%v, revision:%v, filename: %v, matches Line: %v", repo,
+					//	revision, filename, matches.Line)
 					result := models.NewSearchResult(matches, repo, filename, revision, hash, rule)
 					has, err := result.Exist()
-					logger.Log.Infoln(has, err)
 					if err == nil && ! has {
-						logger.Log.Infoln(result.Insert())
+						result.Insert()
 					}
 				}
 			}
@@ -247,7 +247,7 @@ func ScheduleTasks(duration time.Duration) () {
 		// insert all enable repos to repos config table
 		// models.InsertReposConfig()
 
-		rules, err := models.GetRules()
+		rules, err := models.GetLocalRules()
 		if err == nil {
 			reposConfig, err := models.ListValidRepoConfig()
 			if err == nil {
@@ -257,9 +257,7 @@ func ScheduleTasks(duration time.Duration) () {
 		}
 
 		logger.Log.Infof("Complete the scan local repos, start to sleep %v seconds", duration*time.Second)
-		// remove old files
-		err = os.RemoveAll(vars.REPO_PATH)
-		logger.Log.Info("clean local repos files, err: %v", err)
+
 		time.Sleep(duration * time.Second)
 	}
 }

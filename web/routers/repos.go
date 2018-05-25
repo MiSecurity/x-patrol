@@ -26,6 +26,7 @@ package routers
 
 import (
 	"x-patrol/models"
+	"x-patrol/vars"
 
 	"gopkg.in/macaron.v1"
 
@@ -102,12 +103,24 @@ func NewRepoConf(ctx *macaron.Context, sess session.Store) {
 func DoNewRepoConf(ctx *macaron.Context, sess session.Store) {
 	ctx.Req.ParseForm()
 	if sess.Get("admin") != nil {
-		Type := strings.TrimSpace(ctx.Req.Form.Get("type"))
-		content := strings.TrimSpace(ctx.Req.Form.Get("content"))
-		desc := strings.TrimSpace(ctx.Req.Form.Get("desc"))
-		assets := models.NewInputInfo(Type, content, desc)
-		assets.Insert()
-		ctx.Redirect("/admin/repo/list/")
+		repoName := strings.TrimSpace(ctx.Req.Form.Get("name"))
+		repoUrl := strings.TrimSpace(ctx.Req.Form.Get("url"))
+		repoType := strings.TrimSpace(ctx.Req.Form.Get("type"))
+		username := strings.TrimSpace(ctx.Req.Form.Get("username"))
+		password := strings.TrimSpace(ctx.Req.Form.Get("password"))
+
+		_, _, urlPat := models.GetUrlPattern(repoType)
+		vcsConf := models.VcsConfig{Username: username, Password: password}
+
+		repoConfig := models.NewRepoConfig(repoName, repoUrl, vars.DefaultPollInterval, repoType, *urlPat, vcsConf,
+			false, false)
+
+		has, err := repoConfig.Exist()
+		if err == nil && !has {
+			repoConfig.Insert()
+		}
+
+		ctx.Redirect("/admin/repos/list/")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -121,7 +134,7 @@ func EditRepoConf(ctx *macaron.Context, sess session.Store, x csrf.CSRF) {
 		ctx.Data["csrf_token"] = x.GetToken()
 		ctx.Data["assets"] = assets
 		ctx.Data["user"] = sess.Get("admin")
-		ctx.HTML(200, "assets_edit")
+		ctx.HTML(200, "repo_conf_edit")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
@@ -136,7 +149,7 @@ func DoEditRepoConf(ctx *macaron.Context, sess session.Store) {
 		content := strings.TrimSpace(ctx.Req.Form.Get("content"))
 		desc := strings.TrimSpace(ctx.Req.Form.Get("desc"))
 		models.EditInputInfoById(int64(Id), Type, content, desc)
-		ctx.Redirect("/admin/assets/list/")
+		ctx.Redirect("/admin/repos/list/")
 	} else {
 		ctx.Redirect("/admin/login/")
 	}
