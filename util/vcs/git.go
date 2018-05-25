@@ -14,7 +14,7 @@ import (
 const defaultRef = "master"
 
 func init() {
-	Register(newGit, "git")
+	Register(newGit, "git", "gitlab", "github")
 }
 
 type GitDriver struct{}
