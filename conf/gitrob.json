@@ -20,19 +20,11 @@
     "caption": "PHP configuration file",
     "description": "Might contain credentials and keys."
   },
-
   {
-    "part": "filename",
+    "part": "keyword",
     "type": "regex",
     "pattern": "password",
     "caption": "Contains word: password",
-    "description": null
-  },
-  {
-    "part": "filename",
-    "type": "regex",
-    "pattern": "credential",
-    "caption": "Contains word: credential",
     "description": null
   }
 ]
