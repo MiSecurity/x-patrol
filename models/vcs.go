@@ -82,13 +82,13 @@ func InitUrlPattern() () {
 	gitPattern := NewUrlParttern(vars.DefaultBaseUrl, vars.DefaultAnchor, "github")
 	gitlabPattern := NewUrlParttern("{url}/master/{path}{anchor}", vars.DefaultAnchor, "gitlab")
 	svnPattern := NewUrlParttern("{url}/{path}{anchor}", "", "svn")
-	localPatten := NewUrlParttern("", "", "git")
+	// localPatten := NewUrlParttern(vars.DefaultBaseUrl, vars.DefaultAnchor, "git")
 	bitbucketPatten := NewUrlParttern("{url}/src/master/{path}{anchor}", "#{filename}-{line}", "bitbucket")
 
 	urlPatterns = append(urlPatterns, gitPattern)
 	urlPatterns = append(urlPatterns, gitlabPattern)
 	urlPatterns = append(urlPatterns, svnPattern)
-	urlPatterns = append(urlPatterns, localPatten)
+	// urlPatterns = append(urlPatterns, localPatten)
 	urlPatterns = append(urlPatterns, bitbucketPatten)
 
 	for _, u := range urlPatterns {
