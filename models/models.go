@@ -127,7 +127,7 @@ func NewDbEngine() (err error) {
 func InitRules() () {
 	cur, _ := filepath.Abs(".")
 	ruleFile := fmt.Sprintf("%v/conf/gitrob.json", cur)
-	rules, err := GetLocalRules()
+	rules, err := GetAllRules()
 	if err == nil && len(rules) == 0 {
 		logger.Log.Infof("Init rules, err: %v", InsertRules(ruleFile))
 	}

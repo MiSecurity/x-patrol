@@ -58,6 +58,12 @@ func GetLocalRules() ([]Rules, error) {
 	return rules, err
 }
 
+func GetAllRules() ([]Rules, error) {
+	rules := make([]Rules, 0)
+	err := Engine.Table("rules").Find(&rules)
+	return rules, err
+}
+
 func GetRulesPage(page int) ([]Rules, int, error) {
 	rules := make([]Rules, 0)
 	totalPages, err := Engine.Table("rules").Count()
