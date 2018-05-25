@@ -67,7 +67,7 @@ func (s *SearchResult) Insert() (err error) {
 
 func (s *SearchResult) Exist() (bool, error) {
 	result := new(SearchResult)
-	return Engine.Table("search_result").Where("hash=?", s.Hash).Get(result)
+	return Engine.Table("search_result").Where("repo=? and filename=?", s.Repo, s.Filename).Get(result)
 
 }
 

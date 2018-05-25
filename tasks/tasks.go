@@ -106,7 +106,7 @@ func SearchRepos(
 	ch := make(chan *SearchResponse, num)
 	for _, repo := range repos {
 		go func(repo string) {
-			logger.Log.Infof("check repo: %v with rule: %v", repo, query)
+			logger.Log.Infof("check repo: %v with rule: %v, filename: v%", repo, query, opts.FileRegexp)
 			fms, err := idx[repo].Search(query, opts)
 			ch <- &SearchResponse{repo, fms, err}
 		}(repo)

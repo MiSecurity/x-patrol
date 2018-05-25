@@ -113,10 +113,10 @@ func NewDbEngine() (err error) {
 		err = Engine.Ping()
 
 	default:
-		cur, _ := filepath.Abs(".")
-		dataSourceName := fmt.Sprintf("%v/%v/%v.db", cur, DATA_PATH, DATA_NAME)
-		logger.Log.Infof("sqlite db: %v", dataSourceName)
-		Engine, err = xorm.NewEngine("sqlite3", dataSourceName)
+		dataSourceName := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8",
+			USERNAME, PASSWORD, DATA_HOST, DATA_PORT, DATA_NAME)
+
+		Engine, err = xorm.NewEngine("mysql", dataSourceName)
 		Engine.Logger().SetLevel(core.LOG_OFF)
 		err = Engine.Ping()
 	}
