@@ -119,6 +119,11 @@ func SearchRepos(
 		if r == nil {
 			continue
 		}
+
+		if r.res == nil {
+			continue
+		}
+
 		r.res.RuleId = rule.Id
 		r.res.RuleCaption = rule.Caption
 		r.res.RulePattern = rule.Pattern
