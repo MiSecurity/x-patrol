@@ -214,7 +214,7 @@ func DelRepoConfById(ctx *macaron.Context, sess session.Store) {
 	if sess.Get("admin") != nil {
 		id := ctx.Params(":id")
 		Id, _ := strconv.Atoi(id)
-		models.DisableRepoConfById(int64(Id))
+		models.DeleteRepoConfById(int64(Id))
 		refer := "/admin/repos/list/"
 		ctx.Redirect(refer)
 	} else {
