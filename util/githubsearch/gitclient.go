@@ -155,8 +155,8 @@ func (c *Client) SearchCode(keyword string) ([]*github.CodeSearchResult, error) 
 
 		result.CodeResults = t
 
-		logger.Log.Infoln(resp.Remaining, err1, resp.LastPage)
-		if resp.Remaining <= 5 {
+		logger.Log.Infoln(resp.Rate.Remaining, err1, resp.LastPage)
+		if resp.Rate.Remaining <= 5 {
 			time.Sleep(60 * time.Second)
 		}
 		time.Sleep(1 * time.Second)
