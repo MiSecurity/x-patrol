@@ -25,17 +25,17 @@ THE SOFTWARE.
 package tasks
 
 import (
-	"x-patrol/util/index"
-	"x-patrol/util/searcher"
-	"x-patrol/models"
-	"x-patrol/vars"
 	"x-patrol/logger"
+	"x-patrol/models"
+	"x-patrol/util/index"
 	"x-patrol/util/lib"
+	"x-patrol/util/searcher"
+	"x-patrol/vars"
 
-	"time"
 	"os"
-	"sync"
 	"strings"
+	"sync"
+	"time"
 )
 
 const (
@@ -197,7 +197,6 @@ func DistributionTask(tasksMap map[int][]models.RepoConfig, rules []models.Rules
 	for _, rule := range rules {
 		for _, reposConf := range tasksMap {
 			Run(reposConf, rule)
-
 		}
 	}
 }
