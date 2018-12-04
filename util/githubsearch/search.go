@@ -58,10 +58,10 @@ func GenerateSearchCodeTask() (map[int][]models.Rules, error) {
 func Search(rules []models.Rules) () {
 	// 改为了单线程模式
 	var wg sync.WaitGroup
-	wg.Add(1)
 	client, token, err := GetGithubClient()
 	if err == nil && token != "" {
 		for _, rule := range rules {
+			wg.Add(1)
 			go func(rule models.Rules) {
 				defer wg.Done()
 				SaveResult(client.SearchCode(rule.Pattern))
