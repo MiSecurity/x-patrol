@@ -25,9 +25,9 @@ THE SOFTWARE.
 package web
 
 import (
-	"x-patrol/web/routers"
 	"x-patrol/logger"
 	"x-patrol/vars"
+	"x-patrol/web/routers"
 
 	"github.com/go-macaron/cache"
 	"github.com/go-macaron/captcha"
@@ -37,10 +37,10 @@ import (
 
 	"github.com/urfave/cli"
 
-	"net/http"
 	"fmt"
-	"runtime"
 	"html/template"
+	"net/http"
+	"runtime"
 	"strings"
 )
 
@@ -107,6 +107,7 @@ func RunWeb(ctx *cli.Context) {
 		m.Get("/index/", routers.AdminIndex)
 		m.Get("/login/", routers.Login)
 		m.Post("/login/", routers.DoLogin)
+		m.Get("/logout/", routers.Logout)
 
 		m.Group("/users/", func() {
 			m.Get("", routers.ListUsers)

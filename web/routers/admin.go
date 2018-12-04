@@ -29,12 +29,12 @@ import (
 
 	"gopkg.in/macaron.v1"
 
-	"github.com/go-macaron/session"
-	"github.com/go-macaron/csrf"
 	"github.com/go-macaron/captcha"
+	"github.com/go-macaron/csrf"
+	"github.com/go-macaron/session"
 
-	"strings"
 	"strconv"
+	"strings"
 )
 
 func AdminIndex(ctx *macaron.Context, sess session.Store) {
@@ -48,6 +48,11 @@ func AdminIndex(ctx *macaron.Context, sess session.Store) {
 func Login(ctx *macaron.Context, x csrf.CSRF) {
 	ctx.Data["csrf_token"] = x.GetToken()
 	ctx.HTML(200, "login")
+}
+
+func Logout(ctx *macaron.Context, sess session.Store) {
+	sess.Destory(ctx)
+	ctx.Redirect("/admin/login/")
 }
 
 func DoLogin(ctx *macaron.Context, sess session.Store, cpt *captcha.Captcha) {
