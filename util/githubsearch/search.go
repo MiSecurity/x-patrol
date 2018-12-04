@@ -25,14 +25,14 @@ THE SOFTWARE.
 package githubsearch
 
 import (
-	"x-patrol/models"
 	"x-patrol/logger"
+	"x-patrol/models"
 
 	"github.com/google/go-github/github"
 
 	"encoding/json"
-	"time"
 	"sync"
+	"time"
 )
 
 var (
@@ -56,8 +56,9 @@ func GenerateSearchCodeTask() (map[int][]models.Rules, error) {
 }
 
 func Search(rules []models.Rules) () {
+	// 改为了单线程模式
 	var wg sync.WaitGroup
-	wg.Add(len(rules))
+	wg.Add(1)
 	client, token, err := GetGithubClient()
 	if err == nil && token != "" {
 		for _, rule := range rules {
@@ -65,8 +66,8 @@ func Search(rules []models.Rules) () {
 				defer wg.Done()
 				SaveResult(client.SearchCode(rule.Pattern))
 			}(rule)
+			wg.Wait()
 		}
-		wg.Wait()
 	}
 }
 
