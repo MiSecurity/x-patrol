@@ -148,7 +148,7 @@ func (c *Client) SearchCode(keyword string) ([]*github.CodeSearchResult, error) 
 			pushTime := repo.GetPushedAt().Time
 			now := time.Now()
 			if now.Sub(pushTime).Hours()/24 <= 60 {
-				logger.Log.Infof("repo: %v, pushed Time: %v", repo.GetFullName(), pushTime)
+				logger.Log.Infof("repo: %v, pushed Time: %v, keyword: %v", repo.GetFullName(), pushTime, keyword)
 				t = append(t, codeResult)
 			}
 		}
