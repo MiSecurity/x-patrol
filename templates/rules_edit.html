@@ -95,8 +95,9 @@
 
                                         <div class="col-sm-10">
                                             <select class="form-control" name="part">
-                                                <option value="keyword" selected>keyword</option>
-                                                <option value="github">github keyword</option>
+                                                <option value="keyword" selected>本地检测文件内容</option>
+                                                <option value="filename">本地检测文件名</option>
+                                                <option value="github">github搜索</option>
                                             </select>
                                         </div>
                                     </div>
@@ -127,9 +128,7 @@
                                         <label for="desc" class="col-sm-2 control-label">描述</label>
 
                                         <div class="col-sm-10">
-                                            <textarea name="desc" id="desc" class="form-control">
-                                            {{.rules.Description}}
-                                            </textarea>
+                                            <textarea name="desc" id="desc" class="form-control">{{.rules.Description}}</textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -156,6 +155,24 @@
         </section>
     </div>
 </div>
+
+<script type="text/javascript">
+function enableSelection(optionName, selectedValue){
+  options = document.getElementsByName(optionName)[0];
+  for(i = 0; i < options.length; i++){
+    console.log(options[i].value + "==" + selectedValue + "?")
+    if(options[i].value == selectedValue){
+      options[i].selected = true;
+      break;
+    }
+  }
+}
+
+enableSelection('part', {{.rules.Part}})
+enableSelection('type', {{.rules.Type}})
+enableSelection('status', {{.rules.Status}})
+
+</script>
 
 <!-- jQuery 2.2.3 -->
 <script src="/lib/jQuery/jquery-2.2.3.min.js"></script>
