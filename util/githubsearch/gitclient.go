@@ -26,6 +26,7 @@ package githubsearch
 
 import (
 	"x-patrol/models"
+	"x-patrol/settings"
 
 	"github.com/google/go-github/github"
 
@@ -134,6 +135,11 @@ func (c *Client) SearchCode(keyword string) ([]*github.CodeSearchResult, error) 
 	var allSearchResult []*github.CodeSearchResult
 	var err error
 
+	cfg := settings.Cfg
+	sec := cfg.Section("search")
+	months := sec.Key("MONTHS").MustInt(2)
+	logger.Log.Infof("months: %v", months)
+
 	ctx := context.Background()
 	listOpt := github.ListOptions{PerPage: 100}
 	opt := &github.SearchOptions{Sort: "indexed", Order: "desc", TextMatch: true, ListOptions: listOpt}
@@ -147,9 +153,11 @@ func (c *Client) SearchCode(keyword string) ([]*github.CodeSearchResult, error) 
 			repo, _, _ := c.Client.Repositories.GetByID(ctx, id)
 			pushTime := repo.GetPushedAt().Time
 			now := time.Now()
-			if now.Sub(pushTime).Hours()/24 <= 60 {
+			if now.Sub(pushTime).Hours()/24/30 <= float64(months) {
 				logger.Log.Infof("repo: %v, pushed Time: %v, keyword: %v", repo.GetFullName(), pushTime, keyword)
 				t = append(t, codeResult)
+			} else {
+                                logger.Log.Infof("expired ==> repo: %v, pushed Time: %v, keyword: %v", repo.GetFullName(), pushTime, keyword)
 			}
 		}
 
