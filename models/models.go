@@ -25,18 +25,18 @@ THE SOFTWARE.
 package models
 
 import (
-	"x-patrol/settings"
 	"x-patrol/logger"
+	"x-patrol/settings"
 
 	//_ "github.com/mattn/go-sqlite3"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 
-	"github.com/go-xorm/xorm"
 	"github.com/go-xorm/core"
+	"github.com/go-xorm/xorm"
 
-	"path/filepath"
 	"fmt"
+	"path/filepath"
 )
 
 var (
