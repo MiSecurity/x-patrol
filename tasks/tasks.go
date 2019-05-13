@@ -163,7 +163,7 @@ func DoSearch(reposConfig []models.RepoConfig, rules models.Rules) (map[string]*
 		} else {
 			// when rules.Part in ("filename", "path", "extension"), only search filename, and set rules.Pattern = "\\."
 			opts.FileRegexp = rules.Pattern
-			rules.Pattern = "\\."
+			rules.Pattern = "."
 		}
 
 		var filesOpened int

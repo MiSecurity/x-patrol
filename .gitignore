@@ -8,3 +8,7 @@ test/
 main
 
 test
+
+nohup.out
+repos/
+x-patrol
