@@ -25,22 +25,22 @@ THE SOFTWARE.
 package searcher
 
 import (
-	"x-patrol/util/index"
-	"x-patrol/models"
 	"x-patrol/logger"
-	"x-patrol/vars"
+	"x-patrol/models"
+	"x-patrol/util/index"
 	"x-patrol/util/vcs"
+	"x-patrol/vars"
 
-	"sync"
-	"time"
-	"path/filepath"
-	"io/ioutil"
-	"runtime"
-	"os"
-	"fmt"
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"os"
+	"path/filepath"
+	"runtime"
+	"sync"
+	"time"
 )
 
 type empty struct{}

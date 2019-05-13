@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 项目放到$GOPATH/src/目录下，然后安装以下依赖
-go get github.com/etsy/hound/codesearch/sparse
+go get github.com/hound-search/hound/codesearch/sparse
 go get github.com/go-macaron/cache
 go get github.com/go-macaron/captcha
 go get github.com/go-macaron/csrf

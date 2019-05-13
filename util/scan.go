@@ -25,9 +25,9 @@ THE SOFTWARE.
 package util
 
 import (
+	"x-patrol/logger"
 	"x-patrol/tasks"
 	"x-patrol/util/githubsearch"
-	"x-patrol/logger"
 
 	"github.com/urfave/cli"
 
