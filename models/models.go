@@ -34,6 +34,7 @@ import (
 
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
+	io_core "xorm.io/core"
 
 	"fmt"
 	"path/filepath"
@@ -101,15 +102,14 @@ func NewDbEngine() (err error) {
 	case "mysql":
 		dataSourceName := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8",
 			USERNAME, PASSWORD, DATA_HOST, DATA_PORT, DATA_NAME)
-
 		Engine, err = xorm.NewEngine("mysql", dataSourceName)
-		Engine.Logger().SetLevel(core.LOG_OFF)
+		Engine.Logger().SetLevel( io_core.LogLevel(  int(core.LOG_OFF) ) )
 		err = Engine.Ping()
 	case "postgres":
 		dbSourceName := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=%v", USERNAME, PASSWORD, DATA_HOST,
 			DATA_PORT, DATA_NAME, SSL_MODE)
 		Engine, err = xorm.NewEngine("postgres", dbSourceName)
-		Engine.Logger().SetLevel(core.LOG_OFF)
+		Engine.Logger().SetLevel(  io_core.LogLevel(  int(core.LOG_OFF) )  )
 		err = Engine.Ping()
 
 	default:
@@ -117,7 +117,7 @@ func NewDbEngine() (err error) {
 			USERNAME, PASSWORD, DATA_HOST, DATA_PORT, DATA_NAME)
 
 		Engine, err = xorm.NewEngine("mysql", dataSourceName)
-		Engine.Logger().SetLevel(core.LOG_OFF)
+		Engine.Logger().SetLevel(  io_core.LogLevel(  int(core.LOG_OFF) ) )
 		err = Engine.Ping()
 	}
 
