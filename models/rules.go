@@ -27,10 +27,10 @@ package models
 import (
 	"x-patrol/vars"
 
-	"os"
-	"encoding/json"
 	"bufio"
-	"io/ioutil"
+	"encoding/json"
+	"io"
+	"os"
 )
 
 type Rules struct {
@@ -43,7 +43,7 @@ type Rules struct {
 	Status      int    `xorm:"int default 0 notnull"`
 }
 
-func NewRules(part, ruleType, pat, caption, desc string, status int) (*Rules) {
+func NewRules(part, ruleType, pat, caption, desc string, status int) *Rules {
 	return &Rules{Part: part, Type: ruleType, Pattern: pat, Caption: caption, Description: desc, Status: status}
 }
 
@@ -92,7 +92,7 @@ func GetRuleById(id int64) (*Rules, bool, error) {
 	return rule, has, err
 }
 
-func EditRuleById(id int64, part, ruleType, pat, caption, desc string, status int) (error) {
+func EditRuleById(id int64, part, ruleType, pat, caption, desc string, status int) error {
 	rule := new(Rules)
 	_, has, err := GetRuleById(id)
 	if err == nil && has {
@@ -139,7 +139,7 @@ func LoadRuleFromFile(filename string) ([]Rules, error) {
 	var content []byte
 	if err == nil {
 		r := bufio.NewReader(ruleFile)
-		content, err = ioutil.ReadAll(r)
+		content, err = io.ReadAll(r)
 		if err == nil {
 			err = json.Unmarshal(content, &rules)
 		}
@@ -147,7 +147,7 @@ func LoadRuleFromFile(filename string) ([]Rules, error) {
 	return rules, err
 }
 
-func InsertRules(filename string) (error) {
+func InsertRules(filename string) error {
 	rules, err := LoadRuleFromFile(filename)
 	if err == nil {
 		for _, rule := range rules {
