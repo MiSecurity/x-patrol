@@ -34,7 +34,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -147,7 +146,7 @@ func (s *Searcher) Search(pat string, opt *index.SearchOptions) (*index.SearchRe
 // the data directly to clients (thus JSON).
 func (s *Searcher) GetExcludedFiles() string {
 	path := filepath.Join(s.idx.GetDir(), "excluded_files.json")
-	dat, err := ioutil.ReadFile(path)
+	dat, err := os.ReadFile(path)
 	if err != nil {
 		logger.Log.Errorf("Couldn't read excluded_files.json %v\n", err)
 	}
@@ -241,7 +240,7 @@ func findExistingRefs(dbpath string) (*foundRefs, error) {
 // one will be built.
 func buildAndOpenIndex(
 	opt *index.IndexOptions,
-/*dbpath,*/
+	/*dbpath,*/
 	vcsDir,
 	idxDir,
 	url,

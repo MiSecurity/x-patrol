@@ -3,7 +3,6 @@ package vcs
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -66,7 +65,7 @@ func (g *MercurialDriver) Clone(dir, url string) (string, error) {
 		url,
 		rep)
 	cmd.Dir = par
-	cmd.Stdout = ioutil.Discard
+	cmd.Stdout = io.Discard
 	if err := cmd.Run(); err != nil {
 		return "", err
 	}
